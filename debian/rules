@@ -1,12 +1,23 @@
-#! /usr/bin/make -f
+#!/usr/bin/make -f
 
 DH_VERBOSE = 1
 
 DEB_BUILD_OPTIONS = nostrip
 export DEB_BUILD_OPTIONS
 
-override DEB_CONFIGURE_EXTRA_FLAGS = --enable-debug
+#override DEB_CONFIGURE_EXTRA_FLAGS = --enable-debug
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/autotools.mk
 
+DEB_CONFIGURE_EXTRA_FLAGS := --bindir=/usr/sbin --enable-debug
+DEB_DH_INSTALLINIT_ARGS := -R
+
+clean::
+	find doc -name "pgbouncer.*" -exec rm {} \;
+	rm -f doc/*.xml
+
+install/pgbouncer::
+	rm -f $(addprefix $(CURDIR)/debian/pgbouncer/usr/share/doc/pgbouncer/,pgbouncer.ini userlist.txt)
+	mkdir -p $(CURDIR)/debian/pgbouncer/etc/pgbouncer
+	touch $(CURDIR)/debian/pgbouncer/etc/pgbouncer/userlist.txt
